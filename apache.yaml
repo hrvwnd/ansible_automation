@@ -1,0 +1,72 @@
+---
+- hosts: local
+  become: true
+  tasks:
+
+  - name: Install packages
+    apt:
+      name: ['apache2', 'mysql-server', 'mysql-common', 'mysql-client', 'libapache2-mod-wsgi']
+      state: present 
+      update_cache: true
+  
+  - name: Start Services
+    service:
+      name: ['apache2', mysql]
+      state: started
+
+  - name: Emable Modssl
+    shell: a2enmod ssl
+
+  - name: Enable default HTTPS site
+    shell: a2ensite default-ssl
+
+  - name: install python mysql lib
+    apt: 
+      name: python-mysqldb
+      state: present
+
+  - name: mysql user
+    mysql_user:
+      name: root
+      password: root
+      priv: "**:ALL"
+      state: present
+
+  - name: database schema 
+    mysql_db:
+      name: appdata
+      state: present
+
+  - name: install pip
+    apt:
+      name: python3-pip
+      state: present
+
+  - name: download app
+    git: 
+      repo: https://github.com/hrvwnd/example.git
+      dest: /tmp/webapp
+
+  - name: Install app requirements
+    pip:
+      requirements: /tmp/webapp/example/app/requirements.txt
+  # Install / configure app 
+  - name: copy app to apache folder
+    shell: "rsync -av /tmp/webapp/example/app/ /var/www/webapp"
+
+  - name: install mod-wsgi
+    apt:
+      name: libapache2-mod-wsgi
+      state: present
+
+  - name: copy config file
+    copy:
+      src: "apache.conf"
+      dest: /etc/apache2/sites-available/000-default.conf
+
+
+  handlers:
+  - name: restart apache
+    service:
+      name: apache2
+      state: restarted  
