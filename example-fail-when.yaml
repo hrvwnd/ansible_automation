@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  remote_user: ubuntu
+  become: true
+  connection: local
+
+  tasks:
+  - name: Cause Error
+    command: 'some error producing event (nb this does nothing right now)'
+    registr: command_error
+    failed_when: "'stderr' found in command_error.std"
+    # can use jinja 2 expressions
