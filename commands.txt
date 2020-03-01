@@ -1,0 +1,19 @@
+A quick reminder of some of the commands ansible supports
+
+#Simple Ansible command
+ansible <host-pattern> [options]
+
+#To run a playbook
+ansible-playbook -i [inventory type file] [name of playbook]
+
+# TO Create a role
+ansible-galaxy init [name of role]
+
+#Ansible Inventory 
+ansible-inventory [-h] [--version] [-v] [-i INVENTORY]
+                      [--vault-id VAULT_IDS]
+                      [--ask-vault-pass | --vault-password-file VAULT_PASSWORD_FILES]
+                      [--playbook-dir BASEDIR] [--list] [--host HOST]
+                      [--graph] [-y] [--toml] [--vars] [--export]
+                      [--output OUTPUT_FILE]
+                      [host|group]
